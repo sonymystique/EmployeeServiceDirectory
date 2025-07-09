@@ -12,7 +12,7 @@ import java.util.List;
 public interface EmployeeServiceInterface {
 
     public List<EmployeeDTO> getAllDetails();
-    public List<EmployeeDTO> getFilteredDetails(String Domain);
+    public List<EmployeeDTO> getFilteredDetails();
     public EmployeeDTO createEmployee(EmployeeDTO dto);
 
 

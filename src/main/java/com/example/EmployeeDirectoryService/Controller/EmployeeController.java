@@ -30,8 +30,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/getByFilter")
-    public List<EmployeeDTO> getByFilter(@RequestParam String Domain){
-        return employeeServiceInterface.getFilteredDetails(Domain);
+    public List<EmployeeDTO> getByFilter(){
+        return employeeServiceInterface.getFilteredDetails();
     }
 
     @PostMapping("/addEmployeeDetails")

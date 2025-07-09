@@ -2,6 +2,7 @@ package com.example.EmployeeDirectoryService.EmployeeDTO;
 
 import jakarta.validation.constraints.Email;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Data
@@ -13,6 +14,10 @@ public class EmployeeDTO {
     @Email(message = "email should be valid")
     @NotBlank(message = "Email is required")
     private String email;
+
+    public EmployeeDTO() {
+
+    }
 
     public String getFullName() {
         return fullName;
@@ -29,4 +34,19 @@ public class EmployeeDTO {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public String toString() {
+        return "EmployeeDTO{" +
+                "fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+    public EmployeeDTO(String email, String fullName) {
+        this.email = email;
+        this.fullName = fullName;
+    }
+
+
 }

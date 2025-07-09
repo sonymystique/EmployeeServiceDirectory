@@ -28,15 +28,15 @@ public class EmployeeService implements EmployeeServiceInterface {
             .collect(Collectors.toList());
     }
 
-    public List<EmployeeDTO> getFilteredDetails(String domain){
+    public List<EmployeeDTO> getFilteredDetails(){
         List<EmployeeDTO> filtered = employeeRepository.findAll().stream()
             .filter(e ->e.getEmployeeEmail()!=null &&
-                    e.getEmployeeEmail().contains(domain))
+                    e.getEmployeeEmail().contains("@mycompany.com"))
                 .map(EmployeeMapper.instance::toDTO)
                 .collect(Collectors.toList());
         if(filtered.isEmpty()){
             throw new
-                    DomainNotFoundException("No employee found with the given domain: "+domain);
+                    DomainNotFoundException("No employee found with the given domain: ");
 
         }
         return filtered;
