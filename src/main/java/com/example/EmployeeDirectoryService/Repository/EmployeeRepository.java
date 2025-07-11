@@ -2,6 +2,15 @@ package com.example.EmployeeDirectoryService.Repository;
 
 import com.example.EmployeeDirectoryService.Entity.Employees;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employees, Long> {
+   // String domain = "@mycompany.com";
+    @Query(value = "SELECT * FROM employees WHERE employee_email LIKE '%@mycompany.com' ", nativeQuery = true)
+    public List<Employees> getEmployeeWithDomain(String domain);
+
+
+
 }
