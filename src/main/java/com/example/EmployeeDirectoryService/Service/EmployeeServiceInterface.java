@@ -18,4 +18,5 @@ public interface EmployeeServiceInterface {
     public List<Employees> getDomainByQuery(String domain);
     public List<Employees> findEmployeesUsingSort(String field);
     public Page<Employees> findEmployeesUsingPaging(int offset, int PagSize);
+    public EmployeeDTO updateEmployees(int id, EmployeeDTO employeeDTO);
 }

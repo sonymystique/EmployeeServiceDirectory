@@ -1,9 +1,7 @@
 package com.example.EmployeeDirectoryService.Mapper;
 
 import com.example.EmployeeDirectoryService.EmployeeDTO.EmployeeDTO;
-import com.example.EmployeeDirectoryService.Entity.EmployeeTest;
 import com.example.EmployeeDirectoryService.Entity.Employees;
-import com.example.EmployeeDirectoryService.Service.EmployeeServiceTest;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

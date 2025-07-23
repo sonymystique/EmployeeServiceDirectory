@@ -22,7 +22,7 @@ public class EmployeeRepositoryTest {
 
     @Test
     public void testGetEmployeeByDomain(){
-        Employees employees = new Employees(1L,"name1","name1@mycompany.com");
+        Employees employees = new Employees(1,"name1","name1@mycompany.com");
         when(repo.getEmployeeWithDomain(anyString())).thenReturn(List.of(employees));
         String domain = "@mycompany.com";
         List<Employees> listEmployees = repo.getEmployeeWithDomain(domain);
