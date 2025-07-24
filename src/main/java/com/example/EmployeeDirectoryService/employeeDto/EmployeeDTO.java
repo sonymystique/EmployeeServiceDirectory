@@ -1,6 +1,8 @@
-package com.example.EmployeeDirectoryService.EmployeeDTO;
+package com.example.EmployeeDirectoryService.employeeDto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -9,11 +11,11 @@ import org.hibernate.validator.constraints.NotBlank;
 @NoArgsConstructor
 public class EmployeeDTO {
 
-    @NotBlank(message = "Full name is required")
+    @NotEmpty(message = "Full name is required")
     private String fullName;
 
     @Email(message = "email should be valid")
-    @NotBlank(message = "Email is required")
+    @NotEmpty(message = "Email is required")
     private String email;
 
 

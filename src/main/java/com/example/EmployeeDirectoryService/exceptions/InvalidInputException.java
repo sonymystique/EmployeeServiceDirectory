@@ -1,4 +1,4 @@
-package com.example.EmployeeDirectoryService.Exceptions;
+package com.example.EmployeeDirectoryService.exceptions;
 
 public class InvalidInputException extends RuntimeException{
 

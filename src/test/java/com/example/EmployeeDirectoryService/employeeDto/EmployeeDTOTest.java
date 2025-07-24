@@ -1,4 +1,4 @@
-package com.example.EmployeeDirectoryService.EmployeeDTO;
+package com.example.EmployeeDirectoryService.employeeDto;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

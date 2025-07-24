@@ -1,4 +1,4 @@
-package com.example.EmployeeDirectoryService.Entity;
+package com.example.EmployeeDirectoryService.entity;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

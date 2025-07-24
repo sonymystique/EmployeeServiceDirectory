@@ -1,9 +1,8 @@
-package com.example.EmployeeDirectoryService.Repository;
+package com.example.EmployeeDirectoryService.repository;
 
-import com.example.EmployeeDirectoryService.Entity.Employees;
+import com.example.EmployeeDirectoryService.entity.Employees;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
@@ -29,6 +28,8 @@ public class EmployeeRepositoryTest {
 
         listEmployees.forEach(System.out::println);
     }
+
+
 
 
 

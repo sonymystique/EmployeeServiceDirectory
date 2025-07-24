@@ -1,6 +1,6 @@
-package com.example.EmployeeDirectoryService.Repository;
+package com.example.EmployeeDirectoryService.repository;
 
-import com.example.EmployeeDirectoryService.Entity.Employees;
+import com.example.EmployeeDirectoryService.entity.Employees;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

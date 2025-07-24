@@ -1,7 +1,7 @@
-package com.example.EmployeeDirectoryService.Mapper;
+package com.example.EmployeeDirectoryService.mapper;
 
-import com.example.EmployeeDirectoryService.EmployeeDTO.EmployeeDTO;
-import com.example.EmployeeDirectoryService.Entity.Employees;
+import com.example.EmployeeDirectoryService.employeeDto.EmployeeDTO;
+import com.example.EmployeeDirectoryService.entity.Employees;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
