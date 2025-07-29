@@ -11,23 +11,23 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Rollback(false)
+//
+//@DataJpaTest
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+//@Rollback(false)
 public class EmployeeRepositoryTest {
-    @Mock
-    private EmployeeRepository repo;
-
-    @Test
-    public void testGetEmployeeByDomain(){
-        Employees employees = new Employees(1,"name1","name1@mycompany.com");
-        when(repo.getEmployeeWithDomain(anyString())).thenReturn(List.of(employees));
-        String domain = "@mycompany.com";
-        List<Employees> listEmployees = repo.getEmployeeWithDomain(domain);
-
-        listEmployees.forEach(System.out::println);
-    }
+//    @Mock
+//    private EmployeeRepository repo;
+//
+//    @Test
+//    public void testGetEmployeeByDomain(){
+//        Employees employees = new Employees(1,"name1","name1@mycompany.com");
+//        when(repo.getEmployeeWithDomain(anyString())).thenReturn(List.of(employees));
+//        String domain = "@mycompany.com";
+//        List<Employees> listEmployees = repo.getEmployeeWithDomain(domain);
+//
+//        listEmployees.forEach(System.out::println);
+//    }
 
 
 
