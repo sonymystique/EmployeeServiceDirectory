@@ -1,5 +1,4 @@
 package com.example.EmployeeDirectoryService.service.impl;
-
 import com.example.EmployeeDirectoryService.employeeDto.EmployeeDTO;
 import com.example.EmployeeDirectoryService.entity.Employees;
 import com.example.EmployeeDirectoryService.exceptions.DomainNotFoundException;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -38,6 +36,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         } catch (EmployeeNotFoundException ex) {
             log.error("database is empty");
             throw new EmployeeNotFoundException("add some data first");
+        }
+    }
+    @Override
+    public Page<Employees> findEmployeesUsingPaging(int intOffset) {
+        try {
+            if (intOffset < 0) {
+                throw new InvalidInputException("input is invalid");
+            }
+            Page<Employees> employeesPage = employeeRepository.findAll(PageRequest.of(intOffset, pageSize));
+            if (employeesPage.isEmpty()) {
+                throw new EmployeeNotFoundException("no employee found");
+            }
+            return employeesPage;
+        } catch (InvalidInputException ex) {
+            throw new InvalidInputException("input is invalid");
+        } catch (EmployeeNotFoundException ex) {
+            throw new EmployeeNotFoundException("no employee found");
         }
     }
     @Override
@@ -92,42 +107,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmployeeNotFoundException("Employee not found");
         }
     }
-    @Override
-    public List<EmployeeDTO> findEmployeesUsingSort(String field) {
-        //guard clause
-        try {
-            if (field == null) {
-                throw new InvalidInputException("field cannot be null");
-            }
-            List<Employees> employeesList = employeeRepository.findAll(Sort.by(Sort.Direction.DESC, field));
-            List<EmployeeDTO> employeeDTOList = EmployeeMapper.instance.toDTOList(employeesList);
-            if (employeeDTOList.isEmpty()) {
-                throw new EmployeeNotFoundException("no employees found");
-            }
-            return employeeDTOList;
-        } catch (EmployeeNotFoundException ex) {
-            throw new EmployeeNotFoundException("no employees found");
-        } catch (InvalidInputException ex) {
-            throw new InvalidInputException("field cannot be null");
-        }
-    }
-    @Override
-    public Page<Employees> findEmployeesUsingPaging(int intOffset) {
-        try {
-            if (intOffset < 0) {
-                throw new InvalidInputException("input is invalid");
-            }
-            Page<Employees> employeesPage = employeeRepository.findAll(PageRequest.of(intOffset, pageSize));
-            if (employeesPage.isEmpty()) {
-                throw new EmployeeNotFoundException("no employee found");
-            }
-            return employeesPage;
-        } catch (InvalidInputException ex) {
-            throw new InvalidInputException("input is invalid");
-        } catch (EmployeeNotFoundException ex) {
-            throw new EmployeeNotFoundException("no employee found");
-        }
-    }
+
+
     @Override
     public EmployeeDTO updateEmployees(Long id, EmployeeDTO employeeDTO) {
         try {

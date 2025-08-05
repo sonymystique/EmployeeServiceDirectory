@@ -6,7 +6,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,15 +21,14 @@ public class GlobalExceptionHandler {
         body.put("message", ex.getMessage());
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidInputException.class)
-    public ResponseEntity<Map<String, Object>> handleInvalidArgument(InvalidInputException ex) {
+    public Map<String, Object> handleInvalidArgument(InvalidInputException ex) {
         Map<String, Object> errorMap = new HashMap<>();
         errorMap.put("timestamp", LocalDateTime.now());
         errorMap.put("status", HttpStatus.BAD_REQUEST.value());
         errorMap.put("error", "Not Found");
         errorMap.put("message", ex.getMessage());
-        return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
+        return errorMap;
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleEmployeeNotFound(Exception ex) {
@@ -63,4 +61,6 @@ public class GlobalExceptionHandler {
         body.put("message", ex.getMessage());
         return new ResponseEntity<>(body,HttpStatus.BAD_REQUEST);
     }
+
+
 }
