@@ -1,6 +1,7 @@
 package com.example.EmployeeDirectoryService;
 
 public class constants {
-    public static final int pageSize= 5;
     public static final String domain = "@mycompany.com";
+    public static final String url = "/ems/employee/**";
+    public static final String ADMIN = "ADMIN";
 }

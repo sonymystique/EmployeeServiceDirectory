@@ -2,10 +2,15 @@ package com.example.EmployeeDirectoryService.exceptions;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import javax.naming.AuthenticationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,23 +27,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(InvalidInputException.class)
-    public Map<String, Object> handleInvalidArgument(InvalidInputException ex) {
+    public ResponseEntity<Map<String, Object>> handleInvalidArgument(InvalidInputException ex) {
         Map<String, Object> errorMap = new HashMap<>();
         errorMap.put("timestamp", LocalDateTime.now());
         errorMap.put("status", HttpStatus.BAD_REQUEST.value());
         errorMap.put("error", "Not Found");
         errorMap.put("message", ex.getMessage());
-        return errorMap;
+        return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleEmployeeNotFound(Exception ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        body.put("error", "Not Found");
-        body.put("message", ex.getClass());
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    //pending for testing
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> methodArgumentNotValid(MethodArgumentNotValidException ex) {
         Map<String,Object> body = new HashMap<>();
@@ -61,6 +58,14 @@ public class GlobalExceptionHandler {
         body.put("message", ex.getMessage());
         return new ResponseEntity<>(body,HttpStatus.BAD_REQUEST);
     }
-
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> HttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("timestamp", LocalDateTime.now());
+        errorMap.put("status", HttpStatus.BAD_REQUEST.value());
+        errorMap.put("error", "Format error");
+        errorMap.put("message", ex.getMessage());
+        return new ResponseEntity<>(errorMap,HttpStatus.BAD_REQUEST);
+    }
 
 }

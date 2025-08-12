@@ -2,21 +2,25 @@ package com.example.EmployeeDirectoryService.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+@Audited
 public class Employees {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(nullable = false, unique = true)
     private String name;
     @Column(nullable = false, unique = true)
@@ -25,4 +29,5 @@ public class Employees {
     private LocalDateTime createdTimeStamp;
     @LastModifiedDate
     private LocalDateTime lastModifiedTimeStamp;
+
 }

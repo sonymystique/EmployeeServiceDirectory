@@ -17,4 +17,27 @@ spring:
         properties:
             hibernate:
                 format_sql: true
-        show-sql: true
+                envers:
+                    audit_table_suffix: "_AUD" # Default, can be customized
+                    default_schema: "your_schema" # Optional
+                    revision_field_name: "revision_id" # Matches your CustomAuditEntity
+                    revision_type_field_name: "revision_type"
+                    global_with_modified_flag: true # Track changed fields
+                    store_data_at_delete: true # Store audit data when an entity is deleted
+
+                jdbc:
+                    time_zone: UTC
+springdoc:
+    api-docs:
+        path: /v3/api-docs
+    swagger-ui:
+        path: /swagger-ui.html
+        enabled: true
+components:
+    securitySchemes:
+        basicAuth: # <-- arbitrary name for the security scheme
+            type: http
+            scheme: basic
+security: # This applies basicAuth to all operations
+    - basicAuth: []
+

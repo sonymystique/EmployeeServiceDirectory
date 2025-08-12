@@ -4,12 +4,18 @@ import com.example.EmployeeDirectoryService.employeeDto.EmployeeDTO;
 import com.example.EmployeeDirectoryService.entity.Employees;
 import com.example.EmployeeDirectoryService.exceptions.DomainNotFoundException;
 import com.example.EmployeeDirectoryService.exceptions.EmployeeNotFoundException;
+import com.example.EmployeeDirectoryService.exceptions.InvalidInputException;
 import com.example.EmployeeDirectoryService.mapper.EmployeeMapper;
 import com.example.EmployeeDirectoryService.repository.EmployeeRepository;
 import com.example.EmployeeDirectoryService.service.impl.EmployeeServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,36 +29,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 
-//@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class EmployeeServiceTest {
-//
-//
-//
-//
 //    @Mock
 //    private EmployeeRepository employeeRepository;
+//    @Mock
+//    private EmployeeMapper employeeMapper;
 //    @InjectMocks
 //    private EmployeeServiceImpl employeeService;
 //
 //
 //    private Employees sampleEmployees;
 //    private EmployeeDTO sampleEmployeeDTO;
+//    private List<Employees> employees;
+//    private List<EmployeeDTO> employeeDTO;
+//
 //
 //    @BeforeEach()
 //    void setUp() {
-//        sampleEmployees = new Employees(1L, "name1", "name1@gmail.com");
-//        sampleEmployeeDTO = new EmployeeDTO("name2@gmail.com", "name2");
+//        sampleEmployees = new Employees(1L, "name1", "name1@gmail.com",
+//                LocalDateTime.now(),LocalDateTime.now());
+//        sampleEmployeeDTO = new EmployeeDTO("name2", "name2@gmail.com",
+//                LocalDateTime.now(),LocalDateTime.now());
+//       employees = List.of(new Employees(2L, "name2", "name2@mycompany.com",LocalDateTime.now(),LocalDateTime.now()),
+//                new Employees(1L, "name1", "name1@mycompany.com",LocalDateTime.now(), LocalDateTime.now()));
+//       employeeDTO = List.of(new EmployeeDTO("name2", "name2@mycompany.com",LocalDateTime.now(), LocalDateTime.now()),
+//                new EmployeeDTO("name1", "name1@mycompany.com",LocalDateTime.now(), LocalDateTime.now()));
 //    }
 //
 //    @Test
 //    void createEmployeeTest() {
-//        when(employeeRepository.save(Mockito.any(Employees.class))).thenReturn(sampleEmployees);
+//        when(employeeRepository.save(any(Employees.class))).thenReturn(sampleEmployees);
 //
 //        EmployeeDTO result = employeeService.createEmployee(sampleEmployeeDTO);
 //
@@ -60,29 +74,34 @@ public class EmployeeServiceTest {
 //        assertEquals("name1", result.getFullName());
 //        assertEquals("name1@gmail.com", result.getEmail());
 //
+//    }
+//    // not done
+//    @Test
+//    void createEmployeeTest_NOTFOUND() {
+//        EmployeeDTO nullDto = null;
+////        when(employeeRepository.save(nullEmployee)).thenReturn(null);
+////        assertThrows(InvalidInputException.class, () -> employeeService.createEmployee(nullDto));
+//        assertThrows(InvalidInputException.class,()->employeeService.createEmployee(nullDto));
 //
+//        verify(employeeRepository, never()).save(any(Employees.class));
+//        verify(employeeMapper, never()).toEntity(any(EmployeeDTO.class));
+//        verify(employeeMapper, never()).toDTO(any(Employees.class));
 //
 //    }
-//
-//
-//
-//
-//
+//     //done
 //    @Test
 //    void testGetAllDetails() {
-//        List<Employees> employees = List.of(new Employees(2L, "name2", "name2@gmail.com"), new Employees(1L, "name1", "name1@gmail.com"));
-//        List<EmployeeDTO> employeeDTO = List.of(new EmployeeDTO("name2@gmail.com", "name2"), new EmployeeDTO("name1@gmail.com", "name1"));
+//
 //
 //        when(employeeRepository.findAll()).thenReturn(employees);
 //
 //        List<EmployeeDTO> result = employeeService.getAllDetails();
 //
-//        //System.out.println(employeeDTOS);
 //        assertNotNull(result);
 //        assertEquals(2, result.size());
 //
 //    }
-//
+//    //done
 //    @Test
 //    void testGetAllDetails_NOT_FOUND() {
 //        when(employeeRepository.findAll()).thenReturn(Collections.emptyList());
@@ -91,18 +110,13 @@ public class EmployeeServiceTest {
 //
 //    @Test
 //    void testGetFilteredDetails() {
-//        List<Employees> employees = List.of(new Employees(2L, "name2", "name2@mycompany.com"), new Employees(1L, "name1", "name1@gmail.com"));
-//        List<EmployeeDTO> employeeDTO = List.of(new EmployeeDTO("name2", "name2@mycompany.com"));
+//
 //
 //        when(employeeRepository.findAll()).thenReturn(employees);
-//
 //        List<EmployeeDTO> result = employeeService.getFilteredDetails();
-//
 //        assertNotNull(result);
-//
 //        assertEquals(result, employeeDTO);
-//        assertEquals(result.size(), 1);
-//        assertEquals(result.getFirst().getEmail(), "name2@mycompany.com");
+//
 //
 //    }
 //    @Test
@@ -111,71 +125,15 @@ public class EmployeeServiceTest {
 //        assertThrows(DomainNotFoundException.class,()->employeeService.getFilteredDetails());
 //    }
 //
-//    @Test
-//    void testgetDomainByQuery() {
-//
-//        List<EmployeeDTO> employeeDTOList = List.of(new EmployeeDTO("name2", "name2@mycompany.com"));
-//        List<Employees> employees = List.of(new Employees(2L, "name2", "name2@mycompany.com"));
-//
-//        when(employeeRepository.getEmployeeWithDomain(anyString())).thenReturn(employees);
-//
-//        List<EmployeeDTO> result = employeeService.getDomainByQuery("@mycompany");
-//
-//        assertNotNull(result);
-//        assertEquals(1, result.size());
-//        assertEquals(result, employeeDTOList);
-//
-//    }
-//
-//    @Test
-//    void testgetDomainByQuery_NOTFOUND(){
-//        when(employeeRepository.getEmployeeWithDomain(anyString())).thenReturn(Collections.emptyList());
-//        assertThrows(EmployeeNotFoundException.class,()->employeeService.getDomainByQuery("@mycompany"));
-//    }
-//
-//    @Test
-//    void testFindEmployeeUsingSort() {
-//        List<Employees> employeesList = List.of(new Employees(4, "name4", "name4@mycompany.com"),
-//                new Employees(3, "name3", "name3@mycompany.com"),
-//                new Employees(2, "name2", "name2@mycompany.com"),
-//                new Employees(1, "name1", "name1@mycompany.com")
-//
-//        );
-//        List<EmployeeDTO> employeeDTOList = List.of(new EmployeeDTO("name4", "name4@mycompany.com"),
-//                new EmployeeDTO("name3", "name3@mycompany.com"),
-//                new EmployeeDTO("name2", "name2@mycompany.com"),
-//                new EmployeeDTO("name1", "name1@mycompany.com")
-//
-//        );
-//
-//        Sort sort = Sort.by(Sort.Direction.DESC, "id");
-//        when(employeeRepository.findAll(sort)).thenReturn(employeesList);
-//
-//
-//        List<EmployeeDTO> result = employeeService.findEmployeesUsingSort("id");
-//
-//        assertNotNull(result);
-//        assertEquals(4, result.size());
-//        assertEquals(result, employeeDTOList);
-//
-//    }
-//
-//    @Test
-//    void testFindEmployeeUsingSort_NOTFOUND(){
-//        Sort sort = Sort.by(Sort.Direction.DESC, "id");
-//        when(employeeRepository.findAll(sort)).thenReturn(Collections.emptyList());
-//        assertThrows(EmployeeNotFoundException.class,()->employeeService.findEmployeesUsingSort("id"));
-//    }
-//
 //
 //    @Test
 //    void testFindEmployeeUsingPaging() {
-//        List<Employees> employeesList = List.of(new Employees(1, "name1", "name1@mycompany.com"),
-//                new Employees(2, "name2", "name2@mycompany.com"),
-//                new Employees(3, "name3", "name3@mycompany.com"),
-//                new Employees(4, "name4", "name4@mycompany.com"),
-//                new Employees(5, "name5", "name5@mycompany.com"),
-//                new Employees(6, "name6", "name6@mycompany.com")
+//        List<Employees> employeesList = List.of(new Employees(1, "name1", "name1@mycompany.com",LocalDateTime.now(),LocalDateTime.now()),
+//                new Employees(2, "name2", "name2@mycompany.com",LocalDateTime.now(),LocalDateTime.now()),
+//                new Employees(3, "name3", "name3@mycompany.com",LocalDateTime.now(),LocalDateTime.now()),
+//                new Employees(4, "name4", "name4@mycompany.com",LocalDateTime.now(),LocalDateTime.now()),
+//                new Employees(5, "name5", "name5@mycompany.com",LocalDateTime.now(),LocalDateTime.now()),
+//                new Employees(6, "name6", "name6@mycompany.com",LocalDateTime.now(),LocalDateTime.now())
 //        );
 //
 //        Pageable pageable = PageRequest.of(0, 5);
@@ -191,19 +149,54 @@ public class EmployeeServiceTest {
 //        assertEquals(page, result);
 //
 //    }
-
+//    @Test
 //    void testFindEmployeeUsingPaging_NOTFOUND(){
 //        PageRequest pageRequest = PageRequest.of(0, 5);
-//        Pageable pageable;
-//        pageable.
 //
-//        when(employeeRepository.findAll(pageRequest)).thenReturn(Pageable.)
+//
+//        when(employeeRepository.findAll(pageRequest)).thenReturn(Page.empty());
+//        assertThrows(EmployeeNotFoundException.class,()->employeeService.findEmployeesUsingPaging(0,5));
+//
 //    }
-
+//
+//    @Test
+//    void testFindEmployeeUsingPaging_NULL(){
+//        PageRequest pageRequest = PageRequest.of(0, 5);
+//        InvalidInputException thrown = assertThrows(InvalidInputException.class, () -> {
+//                    employeeService.findEmployeesUsingPaging(-1,-1);
+//        });
+//        assertEquals("input is invalid", thrown.getMessage());
+//    }
+//
+//
+//
 //    @Test
 //    void testUpdateEmployee() {
-//        Mockito.when()
+//        when(employeeRepository.findById(anyLong())).thenReturn(Optional.ofNullable(sampleEmployees));
+//        EmployeeDTO result = employeeService.updateEmployees(1L, sampleEmployeeDTO);
+//        assertNotNull(result);
+//        assertEquals(result,sampleEmployeeDTO);
 //    }
-
+//
+//    @Test
+//    void testUpdateEmployee_NOTFOUND(){
+//        when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
+//        assertThrows(EmployeeNotFoundException.class,()->employeeService.updateEmployees(1L,sampleEmployeeDTO));
+//    }
+//
+//    @Test
+//    void testDeleteEmployee() {
+//        when(employeeRepository.findById(anyLong())).thenReturn(Optional.ofNullable(sampleEmployees));
+//        Optional<Employees> result = employeeService.deleteEmployees(1L);
+//        assertNotNull(result);
+//        Optional<Employees> optionalEmployees = Optional.of(sampleEmployees);
+//       assertEquals(result,optionalEmployees);
+//    }
+//
+//    @Test
+//    void testDeleteEmployee_NOTFOUND(){
+//        when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
+//        assertThrows(EmployeeNotFoundException.class,()-> employeeService.deleteEmployees(1L));
+//    }
 
 }

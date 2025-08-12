@@ -1,8 +1,10 @@
 package com.example.EmployeeDirectoryService.service.impl;
+import com.example.EmployeeDirectoryService.auditing.AuditActionContextHolder;
 import com.example.EmployeeDirectoryService.employeeDto.EmployeeDTO;
 import com.example.EmployeeDirectoryService.entity.Employees;
 import com.example.EmployeeDirectoryService.exceptions.DomainNotFoundException;
 import com.example.EmployeeDirectoryService.exceptions.EmployeeNotFoundException;
+import com.example.EmployeeDirectoryService.exceptions.HttpMessageNotReadableException;
 import com.example.EmployeeDirectoryService.exceptions.InvalidInputException;
 import com.example.EmployeeDirectoryService.mapper.EmployeeMapper;
 import com.example.EmployeeDirectoryService.repository.EmployeeRepository;
@@ -17,14 +19,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import static com.example.EmployeeDirectoryService.constants.domain;
-import static com.example.EmployeeDirectoryService.constants.pageSize;
+
+
+// grr
 @Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private EmployeeRepository employeeRepository;
+
+    private final EmployeeRepository employeeRepository;
+
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
+
+    /**
+     * dghg
+     * @return
+     */
     @Override
     public List<EmployeeDTO> getAllDetails() {
         try {
@@ -38,13 +49,19 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmployeeNotFoundException("add some data first");
         }
     }
+
+    /**
+     *
+     * @param intOffset - fghg
+     * @return
+     */
     @Override
-    public Page<Employees> findEmployeesUsingPaging(int intOffset) {
+    public Page<Employees> findEmployeesUsingPaging(int intOffset, int page) {
         try {
-            if (intOffset < 0) {
+            if (intOffset < 0 || page<0) {
                 throw new InvalidInputException("input is invalid");
             }
-            Page<Employees> employeesPage = employeeRepository.findAll(PageRequest.of(intOffset, pageSize));
+            Page<Employees> employeesPage = employeeRepository.findAll(PageRequest.of(intOffset, page));
             if (employeesPage.isEmpty()) {
                 throw new EmployeeNotFoundException("no employee found");
             }
@@ -74,9 +91,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional(rollbackFor = InvalidInputException.class)
     public EmployeeDTO createEmployee(EmployeeDTO dto) throws InvalidInputException {
         try {
+
             if (dto == null) {
                 throw new InvalidInputException("EmployeeDTO cannot be null");
             }
+            AuditActionContextHolder.setAction("CREATE");
             Employees saved = employeeRepository.save(EmployeeMapper.instance.toEntity(dto));
             return EmployeeMapper.instance.toDTO(saved);
 
@@ -85,29 +104,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new InvalidInputException("Not able to create new employee");
         }catch (DataIntegrityViolationException ex){
             throw new DataIntegrityViolationException("duplicated values");
+        }catch(HttpMessageNotReadableException ex){
+            throw new HttpMessageNotReadableException("Input cannot be converted to json");
         }
     }
-    @Override
-    public List<EmployeeDTO> getDomainByQuery(String domain) {
-        try {
-            if (domain == null) {
-                throw new InvalidInputException("Domain cannot be null");
-            }
-            List<Employees> employees = employeeRepository.getEmployeeWithDomain(domain);
-            List<EmployeeDTO> employeeDTOList = EmployeeMapper.instance.toDTOList(employees);
-            if (employeeDTOList.isEmpty()) {
-                throw new EmployeeNotFoundException("no employee found with given domain");
-            }
-            return employeeDTOList;
-        } catch (InvalidInputException ex) {
-            log.error("Domain cannot be null");
-            throw new InvalidInputException("Domain cannot be null");
-        } catch (EmployeeNotFoundException ex) {
-            log.error("Employee not found");
-            throw new EmployeeNotFoundException("Employee not found");
-        }
-    }
-
 
     @Override
     public EmployeeDTO updateEmployees(Long id, EmployeeDTO employeeDTO) {
@@ -119,6 +119,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             Employees employees = employeesOptional.get();
             employees.setName(employeeDTO.getFullName());
             employees.setEmployeeEmail(employeeDTO.getEmail());
+            AuditActionContextHolder.setAction("UPDATE");
             employeeRepository.save(employees);
             return EmployeeMapper.instance.toDTO(employees);
         } catch (EmployeeNotFoundException ex) {
@@ -126,14 +127,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
     @Override
-    public Boolean deleteEmployees(Long id) {
+    public Optional<Employees> deleteEmployees(Long id) {
         try {
             Optional<Employees> employees = employeeRepository.findById(id);
             if (employees.isEmpty()) {
                 throw new EmployeeNotFoundException("no employee with given id");
             }
-            employeeRepository.deleteById(id);
-            return true;
+        AuditActionContextHolder.setAction("DELETE");
+       employeeRepository.deleteById(id);
+            return employees;
         } catch (EmployeeNotFoundException ex) {
             throw new EmployeeNotFoundException("no employee with given id");
         }
