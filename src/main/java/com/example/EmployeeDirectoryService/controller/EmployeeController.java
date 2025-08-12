@@ -18,10 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.lang.module.ResolutionException;
+
 import java.util.List;
 
-import static com.example.EmployeeDirectoryService.constants.domain;
 
 @RestController
 @RequestMapping("/ems")
@@ -29,6 +28,7 @@ import static com.example.EmployeeDirectoryService.constants.domain;
 @Tag(name="Employee APIs", description = "Crud Operations on Employee ")
 public class EmployeeController {
     private EmployeeService employeeService;
+
 
     @GetMapping("/employees/filterByDomain")
     public ResponseEntity<List<EmployeeDTO>> getByFilter() {

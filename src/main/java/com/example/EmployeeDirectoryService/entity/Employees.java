@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Audited
 public class Employees {
 
     @Id
@@ -29,5 +28,6 @@ public class Employees {
     private LocalDateTime createdTimeStamp;
     @LastModifiedDate
     private LocalDateTime lastModifiedTimeStamp;
+
 
 }

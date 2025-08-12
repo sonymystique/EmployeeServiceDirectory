@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Audited
+
 public class EmployeeDTO  {
 
     @NotEmpty(message = "Full name is required")

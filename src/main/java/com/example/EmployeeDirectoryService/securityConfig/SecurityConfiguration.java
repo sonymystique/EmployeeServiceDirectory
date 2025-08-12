@@ -1,4 +1,5 @@
 package com.example.EmployeeDirectoryService.securityConfig;
+
 import com.example.EmployeeDirectoryService.exceptions.CustomAccessDeniedHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
 
 
 import javax.sql.DataSource;
@@ -36,15 +36,16 @@ public class SecurityConfiguration {
         http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers(HttpMethod.POST, url).hasRole(ADMIN)
-                .requestMatchers(HttpMethod.PUT,url).hasRole(ADMIN)
+                .requestMatchers(HttpMethod.PUT, url).hasRole(ADMIN)
                 .requestMatchers(HttpMethod.DELETE, url).hasRole(ADMIN)
                 .anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.httpBasic(withDefaults());
-        http.exceptionHandling(exceptionHandling->
+        http.exceptionHandling(exceptionHandling ->
                 exceptionHandling.accessDeniedHandler(customAccessDeniedHandler));
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -62,12 +63,17 @@ public class SecurityConfiguration {
 //                .password(passwordEncoder().encode("password1"))
 //                .roles("ADMIN")
 //                .build();
+//        UserDetails admin2 = User.withUsername("admin2")
+//                .password(passwordEncoder().encode("password1"))
+//                .roles("ADMIN")
+//                .build();
 //        JdbcUserDetailsManager userDetailsManager =
 //                new JdbcUserDetailsManager(dataSource);
 //        userDetailsManager.createUser(user1);
+//        userDetailsManager.createUser(admin2);
 //        userDetailsManager.createUser(admin);
 //
-//        return new InMemoryUserDetailsManager(user1,admin);
+//        return new InMemoryUserDetailsManager(user1, admin, admin2);
 
        return new JdbcUserDetailsManager(dataSource);
     }

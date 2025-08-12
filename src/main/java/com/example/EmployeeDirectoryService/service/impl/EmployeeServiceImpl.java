@@ -1,5 +1,4 @@
 package com.example.EmployeeDirectoryService.service.impl;
-import com.example.EmployeeDirectoryService.auditing.AuditActionContextHolder;
 import com.example.EmployeeDirectoryService.employeeDto.EmployeeDTO;
 import com.example.EmployeeDirectoryService.entity.Employees;
 import com.example.EmployeeDirectoryService.exceptions.DomainNotFoundException;
@@ -95,7 +94,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (dto == null) {
                 throw new InvalidInputException("EmployeeDTO cannot be null");
             }
-            AuditActionContextHolder.setAction("CREATE");
             Employees saved = employeeRepository.save(EmployeeMapper.instance.toEntity(dto));
             return EmployeeMapper.instance.toDTO(saved);
 
@@ -119,7 +117,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             Employees employees = employeesOptional.get();
             employees.setName(employeeDTO.getFullName());
             employees.setEmployeeEmail(employeeDTO.getEmail());
-            AuditActionContextHolder.setAction("UPDATE");
             employeeRepository.save(employees);
             return EmployeeMapper.instance.toDTO(employees);
         } catch (EmployeeNotFoundException ex) {
@@ -133,7 +130,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (employees.isEmpty()) {
                 throw new EmployeeNotFoundException("no employee with given id");
             }
-        AuditActionContextHolder.setAction("DELETE");
        employeeRepository.deleteById(id);
             return employees;
         } catch (EmployeeNotFoundException ex) {
